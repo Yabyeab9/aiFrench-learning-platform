@@ -1,5 +1,5 @@
 
-package com.aifrench.backend.dto;
+package com.aifrench.backend.auth;
 
 public class LoginRequest {
 

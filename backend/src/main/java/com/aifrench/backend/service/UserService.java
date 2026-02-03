@@ -1,7 +1,7 @@
 package com.aifrench.backend.service;
 
 import com.aifrench.backend.domain.User;
-import com.aifrench.backend.dto.RegisterRequest;
+import com.aifrench.backend.auth.RegisterRequest;
 import com.aifrench.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

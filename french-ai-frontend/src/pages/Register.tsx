@@ -1,78 +1,106 @@
-import AuthLayout from "../components/AuthLayout";
-import InputField from "../components/InputField";
-import PrimaryButton from "../components/PrimaryButton";
-import { Link } from "react-router-dom";
-import { UserIcon, EnvelopeIcon, LockClosedIcon, SparklesIcon } from "@heroicons/react/24/outline"; // Install @heroicons/react if needed
+import {Link, useNavigate} from "react-router-dom";
+import Input from "../components/ui/Input";
+import { Button } from "../components/ui/Button";
+import { motion } from "framer-motion";
+import {useState} from "react";
+import {api} from "../api/axios.ts";
 
 export default function Register() {
+    const navigate = useNavigate()
+    const [name,setName]=useState("")
+    const [email,setEmail]=useState("")
+    const [password,setPassword]=useState("")
+
+    const handleRegister=async()=>{
+         await api.post("/register",{
+            name,email,password
+        });
+         navigate("/login");
+
+    }
     return (
-        <AuthLayout>
-            {/* Full-screen gradient background with French flag colors */}
-            <div className="min-h-screen bg-gradient-to-br from-blue-500 via-white to-red-500 flex items-center justify-center p-4">
-                {/* Centered card with glassmorphism effect */}
-                <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 w-full max-w-md transform transition-all duration-300 hover:scale-105">
-                    {/* Header with icon and animation */}
-                    <div className="text-center mb-8 animate-fade-in">
-                        <SparklesIcon className="h-12 w-12 text-red-600 mx-auto mb-4 drop-shadow-lg" />
-                        <h1 className="text-4xl font-extrabold text-gray-800 drop-shadow-sm">
-                            Join the Journey ✨
-                        </h1>
-                        <p className="text-gray-600 text-sm mt-2 italic">
-                            Learn French for life, work, and study
-                        </p>
-                    </div>
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-neutral-950 text-white"
+        >
 
-                    {/* Form inputs with enhanced styling */}
-                    <div className="space-y-6">
-                        <div className="relative">
-                            <UserIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                            <InputField
-                                label="Full Name"
-                                type="text"
-                                placeholder="Your full name"
-                                className="pl-10 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
-                            />
-                        </div>
-                        <div className="relative">
-                            <EnvelopeIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                            <InputField
-                                label="Email"
-                                type="email"
-                                placeholder="you@example.com"
-                                className="pl-10 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
-                            />
-                        </div>
-                        <div className="relative">
-                            <LockClosedIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                            <InputField
-                                label="Password"
-                                type="password"
-                                placeholder="••••••••"
-                                className="pl-10 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
-                            />
-                        </div>
-                    </div>
 
-                    {/* Button with gradient and hover effect */}
-                    <div className="mt-8">
-                        <PrimaryButton
-                            text="Create Account"
-                            className="w-full bg-gradient-to-r from-blue-600 to-red-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-red-700 transform hover:scale-105 transition-all duration-300"
+
+        {/* LEFT SIDE – BRAND / STORY */}
+            <div className="hidden lg:flex flex-col justify-center px-16 bg-gradient-to-br from-indigo-600 to-purple-700">
+                <h1 className="text-5xl font-bold leading-tight">
+                    Learn French
+                    <br />
+                    the smart way 🇫🇷
+                </h1>
+
+                <p className="mt-6 text-lg text-white/80 max-w-md">
+                    Practice real conversations, get instant AI feedback,
+                    and grow step by step — like real life.
+                </p>
+
+                <p className="mt-12 text-sm text-white/70">
+                    Built for learners. Designed for focus.
+                </p>
+            </div>
+
+            {/* RIGHT SIDE – FORM */}
+            <div className="flex items-center justify-center px-6">
+                <div className="w-full max-w-md">
+
+                    <h2 className="text-3xl font-semibold">
+                        Create your account
+                    </h2>
+
+                    <p className="text-white/60 mt-2">
+                        Start learning in under a minute
+                    </p>
+
+                    <form className="mt-8 space-y-5">
+
+                        <Input
+                            label="Full name"
+                            value={name}
+                            onChange={(n)=>setName(n.target.value)}
+                            placeholder="John Doe"
                         />
-                    </div>
 
-                    {/* Footer link with hover underline */}
-                    <p className="text-sm text-center mt-6 text-gray-600">
+                        <Input
+                            label="Email"
+                            type="email"
+                            value={email}
+                            onChange={e=>setEmail(e.target.value)}
+                            placeholder="you@example.com"
+                        />
+
+                        <Input
+                            label="Password"
+                            type="password"
+                            value={password}
+                            onChange={p=>setPassword(p.target.value)}
+                            placeholder="••••••••"
+                        />
+
+                        <Button className="w-full mt-4"
+                        onClick={handleRegister()}>
+                            Create account
+                        </Button>
+                    </form>
+
+                    <p className="text-sm text-white/60 mt-6">
                         Already have an account?{" "}
                         <Link
                             to="/login"
-                            className="text-indigo-600 font-semibold hover:underline hover:text-indigo-800 transition-colors duration-200"
+                            className="text-white font-medium hover:underline"
                         >
-                            Login
+                            Log in
                         </Link>
                     </p>
                 </div>
             </div>
-        </AuthLayout>
+        </motion.div>
     );
 }

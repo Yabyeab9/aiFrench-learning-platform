@@ -2,13 +2,6 @@
 module.exports = {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
-        extend: {},
-    },
-    plugins: [],
-};
-module.exports = {
-    // ... existing config
-    theme: {
         extend: {
             animation: {
                 'fade-in': 'fadeIn 0.5s ease-in-out',
@@ -21,4 +14,5 @@ module.exports = {
             },
         },
     },
+    plugins: [],
 };
