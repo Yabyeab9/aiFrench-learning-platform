@@ -15,11 +15,11 @@ public class Lesson {
 
     private String title;
 
-    private String level;   // A1, A2, B1
-
-    private int orderIndex; // lesson order in course
-
-    private int totalXp;
-
-    private boolean published;
+    private String difficulty;   // A1, A2, B1
+//
+//    private int orderIndex; // lesson order in course
+//    private int requiredXp;
+//    private int totalXp;
+//
+//    private boolean published;
 }

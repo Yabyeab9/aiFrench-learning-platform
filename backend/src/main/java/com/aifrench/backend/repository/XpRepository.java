@@ -11,11 +11,11 @@ import java.util.List;
 public interface XpRepository extends JpaRepository<XpLog, Long> {
 
         @Query(value = """
-    SELECT DAYNAME(x.date) AS day, SUM(x.amount) AS total
+    SELECT TO_CHAR(x.date, 'Day') AS day, SUM(x.amount) AS total
     FROM xp_log x
     WHERE x.user_id = :userId
-    GROUP BY DAYNAME(x.date)
-    ORDER BY DAYNAME(x.date)
+    GROUP BY TO_CHAR(x.date, 'Day')
+    ORDER BY TO_CHAR(x.date, 'Day')
 """, nativeQuery = true)
         List<XpPoint> weeklyXp(@Param("userId") Long userId);
 

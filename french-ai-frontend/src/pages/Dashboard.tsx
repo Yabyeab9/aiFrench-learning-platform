@@ -44,12 +44,12 @@ export default function Dashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-10"
             >
-                <h1 className="text-4xl font-bold">
-                    Welcome back, {user?.name ?? "there"} 👋
-                </h1>
-                <p className="text-slate-400 mt-2">
-                    Ready to become fluent today?
-                </p>
+                <h1 className="text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">
+                        Welcome back, {user?.name ?? "there"} 👋
+                    </h1>
+                    <p className="text-slate-400 mt-3 text-lg">
+                        Ready to become fluent today?
+                    </p>
             </motion.div>
 
             {isNewUser && (

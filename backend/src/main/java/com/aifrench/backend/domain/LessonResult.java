@@ -6,22 +6,21 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 @Entity
-@Table(name = "lesson_progress")
-@Getter @Setter
-public class LessonProgress {
+@Table(name = "lesson_results")
+@Setter
+public class LessonResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+@Transient
+private boolean correct;
     private Long userId;
+    private Long lessonId;
 
-    @ManyToOne
-    private Lesson lesson;
-    private int earnedXp;
+    private int totalScore;
 
     private boolean completed;
-    private int progressPercent;
 
-    private LocalDateTime lastAccessedAt;
+    private LocalDateTime completedAt;
 }

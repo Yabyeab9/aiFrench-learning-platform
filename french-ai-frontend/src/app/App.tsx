@@ -6,6 +6,7 @@ import LessonPage from "../features/lessons/LessonPage.tsx";
 import Login from "../pages/Login.tsx";
 import AiTutorPage from "../pages/AiTutorPage.tsx";
 import HomePage from "../Page.tsx";
+import ProtectedRoute from "../components/auth/ProtectedRoute.tsx";
 
 export default function App() {
     return (
@@ -17,27 +18,33 @@ export default function App() {
                 <Route
                     path="/dashboard"
                     element={
+                    <ProtectedRoute>
                         <AppLayout>
                             <Dashboard />
                         </AppLayout>
+                    </ProtectedRoute>
                     }
                 />
 
                 <Route
                     path="/lesson"
                     element={
+                        <ProtectedRoute>
                         <AppLayout>
                             <LessonPage />
                         </AppLayout>
+                        </ProtectedRoute>
                     }
                 />
 
                 <Route
                     path="/ai"
                     element={
+                        <ProtectedRoute>
                         <AppLayout>
                             <AiTutorPage />
                         </AppLayout>
+                        </ProtectedRoute>
                     }
                 />
             </Routes>

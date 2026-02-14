@@ -1,6 +1,7 @@
 package com.aifrench.backend.security;
 
 
+import com.aifrench.backend.config.UserPrincipal;
 import com.aifrench.backend.domain.User;
 import com.aifrench.backend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,10 +26,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPassword())
-                .authorities("USER")
-                .build();
+        return new UserPrincipal(user);
     }
 }

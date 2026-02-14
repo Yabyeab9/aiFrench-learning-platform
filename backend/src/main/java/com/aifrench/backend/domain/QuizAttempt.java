@@ -18,6 +18,9 @@ public class QuizAttempt {
     private Long lessonId;
     private int score;
     private int totalQuestions;
+    @ManyToOne
+    private Question question;
 
+    private boolean correct;
     private LocalDateTime createdAt;
 }

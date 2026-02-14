@@ -1,8 +1,11 @@
 import axios from "axios";
 
 export async function getDashboard() {
+    const token = localStorage.getItem("accessToken");
     const res = await axios.get("/api/dashboard", {
-        withCredentials: true // if session-based
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
     });
     return res.data;
 }

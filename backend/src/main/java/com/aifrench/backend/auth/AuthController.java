@@ -1,7 +1,10 @@
 package com.aifrench.backend.auth;
 
 import com.aifrench.backend.domain.RefreshToken;
+import com.aifrench.backend.dto.AiChatRequest;
+import com.aifrench.backend.dto.AiChatResponse;
 import com.aifrench.backend.repository.RefreshTokenRepository;
+import com.aifrench.backend.service.AiChatService;
 import com.aifrench.backend.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +12,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import com.aifrench.backend.security.JwtUtil;
@@ -26,16 +31,18 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 private  final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final AiChatService aiChatService;
 
 private final RefreshTokenRepository refreshTokenRepository;
     public AuthController(
             AuthenticationManager authManager,
-            JwtUtil jwtUtil, UserService userService, PasswordEncoder passwordEncoder, RefreshTokenRepository refreshTokenRepository
+            JwtUtil jwtUtil, UserService userService, PasswordEncoder passwordEncoder, AiChatService aiChatService, RefreshTokenRepository refreshTokenRepository
     ) {
         this.authManager = authManager;
         this.jwtUtil = jwtUtil;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.aiChatService = aiChatService;
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
@@ -177,20 +184,13 @@ catch (AuthenticationException e) {
 
 
 
-        @PostMapping("/chat")
-        public ResponseEntity<?> chat(@RequestBody Map<String, String> request) {
-            String userMessage = request.get("message");
-
-            if (userMessage == null || userMessage.isBlank()) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Message cannot be empty"));
-            }
-
-            // For now: simple mock AI response
-            String reply = "AI says: " + new StringBuilder(userMessage).reverse().toString();
-
-            // TODO: Replace with actual AI logic (OpenAI API or your ML model)
-            return ResponseEntity.ok(Map.of("reply", reply));
-        }
+    @PostMapping("/chat")
+    public AiChatResponse chat(
+            @AuthenticationPrincipal UserDetails user,
+            @RequestBody AiChatRequest request
+    ) throws Exception {
+        return aiChatService.chat(user.getUsername(), request.message());
+    }
 
 
 }

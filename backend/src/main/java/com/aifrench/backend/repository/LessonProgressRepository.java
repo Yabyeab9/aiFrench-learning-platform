@@ -5,8 +5,11 @@ import com.aifrench.backend.dto.LessonCard;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface LessonProgressRepository
         extends JpaRepository<LessonProgress, Long> {
+    Optional<LessonProgress> findByUserIdAndLessonId(Long userId, Long lessonId);
 
     long countByUserId(Long userId);
 

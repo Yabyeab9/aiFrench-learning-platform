@@ -1,10 +1,12 @@
 package com.aifrench.backend.security;
 
+import com.aifrench.backend.config.UserPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -40,7 +43,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // 🔹 2. Check Bearer token
         if (authHeader != null
                 && authHeader.startsWith("Bearer ")
-                && SecurityContextHolder.getContext().getAuthentication() == null) {
+               ) {
 
             String token = authHeader.substring(7);
 
@@ -50,8 +53,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 String email = jwtUtil.extractEmail(token);
 
                 // 🔹 4. Load user from DB
-                UserDetails userDetails =
-                        userDetailsService.loadUserByUsername(email);
+                UserPrincipal userDetails =
+                        (UserPrincipal) userDetailsService.loadUserByUsername(email);
 
                 // 🔹 5. Build Authentication object
                 UsernamePasswordAuthenticationToken authentication =

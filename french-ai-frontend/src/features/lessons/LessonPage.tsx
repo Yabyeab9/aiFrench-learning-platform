@@ -14,7 +14,7 @@ export default function LessonPage() {
             p-6
         ">
             <ProgressBar />
-            <QuestionCard />
+            <QuestionCard/>
         </div>
     );
 }

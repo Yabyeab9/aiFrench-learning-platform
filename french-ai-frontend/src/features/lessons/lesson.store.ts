@@ -1,54 +1,61 @@
 import { create } from "zustand";
 
-type Question = {
+interface Question {
     id: number;
-    type: "mcq" | "translate";
+    points: number;
     question: string;
+    type: "mcq" | "translate";
     options?: string[];
-    answer: string;
-};
+}
 
-type LessonState = {
+interface LessonStore {
     questions: Question[];
     current: number;
     score: number;
 
-    answerQuestion: (answer: string) => boolean;
+    loadQuestions: (lessonId: number) => Promise<void>;
+    answerQuestion: (answer: string) => Promise<boolean>;
     next: () => void;
     reset: () => void;
-};
+}
 
-export const useLessonStore = create<LessonState>((set, get) => ({
-
-    questions: [
-        {
-            id: 1,
-            type: "mcq",
-            question: "What is 'Bonjour'?",
-            options: ["Hello", "Goodbye", "Thanks"],
-            answer: "Hello",
-        },
-        {
-            id: 2,
-            type: "translate",
-            question: "Translate: Merci",
-            answer: "Thank you",
-        },
-    ],
-
+export const useLessonStore = create<LessonStore>((set, get) => ({
+    questions: [],
     current: 0,
     score: 0,
 
-    answerQuestion: (answer) => {
+    loadQuestions: async (lessonId: number) => {
+        const token = localStorage.getItem("accessToken");
 
-        const { questions, current, score } = get();
+        const res = await fetch('/api/lessons/42/questions', {
+            headers: { "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json" }
+        });
 
-        const correct = questions[current].answer
-            .toLowerCase()
-            .trim() === answer.toLowerCase().trim();
+
+        const data: Question[] = await res.json();
+        set({ questions: data, current: 0 });
+    },
+
+    answerQuestion: async (answer: string) => {
+        const token = localStorage.getItem("accessToken");
+
+        const q = get().questions[get().current];
+
+        const res = await fetch(`/api/lessons/42/answer`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json" },
+            body: JSON.stringify({
+                questionId: q.id,
+                answer,
+            }),
+        });
+
+        const correct = await res.json();
 
         if (correct) {
-            set({ score: score + 10 });
+            set((s) => ({ score: s.score + q.points }));
         }
 
         return correct;
@@ -56,5 +63,5 @@ export const useLessonStore = create<LessonState>((set, get) => ({
 
     next: () => set((s) => ({ current: s.current + 1 })),
 
-    reset: () => set({ current: 0, score: 0 }),
+    reset: () => set({ questions: [], current: 0, score: 0 }),
 }));

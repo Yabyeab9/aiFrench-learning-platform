@@ -1,5 +1,6 @@
 package com.aifrench.backend.service;
 
+import com.aifrench.backend.domain.Role;
 import com.aifrench.backend.domain.User;
 import com.aifrench.backend.auth.RegisterRequest;
 import com.aifrench.backend.repository.UserRepository;
@@ -23,10 +24,10 @@ public class UserService {
 
         User user = User.builder()
                 .email(request.getEmail())
+                .name(request.getName())
                 .password(passwordEncoder.encode(request.getPassword())) // 🔐 HASHED
-                .nativeLanguage(request.getNativeLanguage())
-                .targetLanguage(request.getTargetLanguage())
                 .level(request.getLevel())
+                .role(Role.USER)
                 .build();
 
         userRepository.save(user);

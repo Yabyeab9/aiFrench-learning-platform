@@ -27,11 +27,6 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String nativeLanguage; // English, Amharic, etc.
-
-    @Column(nullable = false)
-    private String targetLanguage; // French
 
     @Column(nullable = false)
     private String level; // BEGINNER, INTERMEDIATE, ADVANCED

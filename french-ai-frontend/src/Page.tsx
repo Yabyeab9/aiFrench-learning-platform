@@ -59,18 +59,20 @@ export default function HomePage() {
             </section>
 
             {/* Call to Action */}
-            <section className="text-center py-24 bg-gradient-to-r from-indigo-600 to-purple-600 mt-16 rounded-t-3xl shadow-2xl">
-                <h2 className="text-5xl font-extrabold mb-8">Upgrade to Premium Today</h2>
-                <p className="text-slate-200 text-lg mb-10">
-                    Unlock all features, enjoy a sleek UI, and accelerate your fluency journey.
+            <footer className="text-center py-16 bg-gradient-to-r from-indigo-600 to-purple-600 mt-16 rounded-t-3xl shadow-2xl">
+                <h2 className="text-3xl font-extrabold mb-6">About the Web</h2>
+                <p className="text-slate-200 text-md mb-8 max-w-2xl mx-auto">
+                    The web connects people, ideas, and opportunities across the globe.
+                    It’s a space for learning, sharing, and building communities that
+                    transcend boundaries.
                 </p>
-                <motion.button
-                    whileHover={{ scale: 1.08 }}
-                    className="bg-white text-indigo-700 px-12 py-5 rounded-full text-xl font-bold shadow-lg hover:bg-slate-100 transition"
-                >
-                    Go Premium <Star className="inline ml-2 text-yellow-500" />
-                </motion.button>
-            </section>
+                <div className="flex justify-center space-x-6">
+                    <a href="/about" className="text-white hover:text-yellow-300 transition">Learn More</a>
+                    <a href="/contact" className="text-white hover:text-yellow-300 transition">Contact Us</a>
+                    <a href="/privacy" className="text-white hover:text-yellow-300 transition">Privacy Policy</a>
+                </div>
+            </footer>
+
         </div>
     );
 }
