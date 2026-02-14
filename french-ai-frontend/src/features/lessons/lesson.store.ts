@@ -12,7 +12,6 @@ interface LessonStore {
     questions: Question[];
     current: number;
     score: number;
-
     loadQuestions: (lessonId: number) => Promise<void>;
     answerQuestion: (answer: string) => Promise<boolean>;
     next: () => void;
@@ -23,7 +22,7 @@ export const useLessonStore = create<LessonStore>((set, get) => ({
     questions: [],
     current: 0,
     score: 0,
-
+    totalQuestions:()=>get().questions.length,
     loadQuestions: async (lessonId: number) => {
         const token = localStorage.getItem("accessToken");
 
@@ -55,7 +54,7 @@ export const useLessonStore = create<LessonStore>((set, get) => ({
         const correct = await res.json();
 
         if (correct) {
-            set((s) => ({ score: s.score + q.points }));
+            set((s) => ({ score: s.score + 1 }));
         }
 
         return correct;

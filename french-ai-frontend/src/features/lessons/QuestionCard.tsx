@@ -30,20 +30,12 @@ export default function QuestionCard() {
     const submit = async () => {
         const correct = await answerQuestion(selected);
         setResult(correct);
-
-        if (correct) {
-            correctSound.play();
-            setTimeout(() => {
-                setSelected("");
-                setResult(null);
-                if (current < questions.length - 1) {
-                    next(); // only advance if more questions exist
-                }
-            }, 900);
-        } else {
-            wrongSound.play();
-            alert("❌ Oops! Try again.");
-        }
+        correct ? correctSound.play() : wrongSound.play();
+        setTimeout(() => {
+            setSelected("");
+            setResult(null);
+            next();
+        }, 900);
     };
 
 
@@ -77,11 +69,14 @@ export default function QuestionCard() {
 }
 
 function LessonComplete() {
-    const { score, reset } = useLessonStore();
+    const { score, reset,questions } = useLessonStore();
+    const total = questions.length;
     return (
         <div className="text-center">
             <h1 className="text-4xl font-bold mb-4">🎉 Lesson Complete</h1>
-            <p className="text-xl mb-6">Score: {score}</p>
+            <p className="text-xl mb-6">
+                Score: {score} / {total}
+            </p>
             <button onClick={reset} className="bg-indigo-600 px-6 py-3 rounded-xl">
                 Replay
             </button>
