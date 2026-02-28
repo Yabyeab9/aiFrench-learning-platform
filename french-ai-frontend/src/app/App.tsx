@@ -7,6 +7,9 @@ import Login from "../pages/Login.tsx";
 import AiTutorPage from "../pages/AiTutorPage.tsx";
 import HomePage from "../Page.tsx";
 import ProtectedRoute from "../components/auth/ProtectedRoute.tsx";
+import ProgressPage from "../pages/ProgressPage.tsx";
+import SettingsPage from "../pages/Settings.tsx";
+import ProfilePage from "../pages/Profile.tsx";
 
 export default function App() {
     return (
@@ -44,6 +47,39 @@ export default function App() {
                         <AppLayout>
                             <AiTutorPage />
                         </AppLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/progress"
+                    element={
+                        <ProtectedRoute>
+                            <AppLayout>
+                                <ProgressPage />
+                            </AppLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/settings"
+                    element={
+                        <ProtectedRoute>
+                            <AppLayout>
+                                <SettingsPage />
+                            </AppLayout>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute>
+                            <AppLayout>
+                                <ProfilePage />
+                            </AppLayout>
                         </ProtectedRoute>
                     }
                 />

@@ -1,42 +1,20 @@
-import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    Tooltip,
-    ResponsiveContainer
-} from "recharts";
+import {useLessonStore} from "../lessons/lesson.store.ts";
 
-const data = [
-    { day: "Mon", xp: 20 },
-    { day: "Tue", xp: 40 },
-    { day: "Wed", xp: 80 },
-    { day: "Thu", xp: 60 },
-    { day: "Fri", xp: 120 },
-];
 
-export default function ProgressChart() {
+export default function ProgressSection() {
+    const { current, questions, score } = useLessonStore();
+    const total = questions.length;
+    const progress = total > 0 ? Math.round(((current+1) / total) * 100) : 0;
+    const accuracy = current > 0 ? Math.round((score / (current+1)) * 100) : 0;
 
     return (
-        <div className="
-            bg-slate-900
-            p-6
-            rounded-3xl
-            h-80
-        ">
-            <ResponsiveContainer>
-                <LineChart data={data}>
-                    <XAxis dataKey="day"/>
-                    <YAxis/>
-                    <Tooltip/>
-                    <Line
-                        type="monotone"
-                        dataKey="xp"
-                        stroke="#6366f1"
-                        strokeWidth={3}
-                    />
-                </LineChart>
-            </ResponsiveContainer>
+        <div>
+            <h3 className="text-lg font-bold mb-2">Lesson Progress</h3>
+            <div className="w-full bg-slate-700 rounded-full h-3 mb-2">
+                <div className="bg-emerald-500 h-3 rounded-full" style={{ width: `${progress}%` }} />
+            </div>
+            <p className="text-sm">Question {current+1} of {total}</p>
+            <p className="text-sm">Accuracy: {accuracy}%</p>
         </div>
     );
 }

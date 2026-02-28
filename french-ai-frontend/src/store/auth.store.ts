@@ -1,10 +1,16 @@
 import { create } from "zustand";
 
+export type User = {
+    id: number;
+    email: string;
+    name?: string;
+    level?: string;
+};
+
 export type AuthState = {
     accessToken: string | null;
-    user: any | null;
-
-    login: (token: string, user: any) => void;
+    user: User | null;
+    login: (token: string, user: User, remember?: boolean) => void;
     logout: () => void;
 };
 
@@ -16,14 +22,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         if (remember) {
             localStorage.setItem("token", token);
         }
-        set({
-            accessToken: token,
-            user,
-        })
+        set({ accessToken: token, user });
     },
     logout: () =>
-        set({
-            accessToken: null,
-            user: null,
-        }),
+        set({ accessToken: null, user: null }),
 }));

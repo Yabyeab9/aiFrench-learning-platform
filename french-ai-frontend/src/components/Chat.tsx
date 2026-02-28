@@ -3,12 +3,14 @@
 import { useState } from "react";
 import ChatBubble from "./ChatBubble.tsx";
 
+type Message = { role: 'user' | 'assistant' | string; text: string };
+
 export default function Chat() {
-    const [messages, setMessages] = useState<any[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
 
     function sendMessage() {
-        setMessages([...messages, { role: "user", text: input }]);
+        setMessages((m) => [...m, { role: "user", text: input }]);
         setInput("");
     }
 
@@ -33,4 +35,3 @@ export default function Chat() {
         </main>
     );
 }
-

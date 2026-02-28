@@ -6,6 +6,7 @@ import com.aifrench.backend.dto.AiChatResponse;
 import com.aifrench.backend.repository.RefreshTokenRepository;
 import com.aifrench.backend.service.AiChatService;
 import com.aifrench.backend.service.UserService;
+import com.aifrench.backend.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,14 +30,15 @@ public class AuthController {
 
     private final AuthenticationManager authManager;
     private final JwtUtil jwtUtil;
-private  final UserService userService;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AiChatService aiChatService;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
 
-private final RefreshTokenRepository refreshTokenRepository;
     public AuthController(
             AuthenticationManager authManager,
-            JwtUtil jwtUtil, UserService userService, PasswordEncoder passwordEncoder, AiChatService aiChatService, RefreshTokenRepository refreshTokenRepository
+            JwtUtil jwtUtil, UserService userService, PasswordEncoder passwordEncoder, AiChatService aiChatService, RefreshTokenRepository refreshTokenRepository, UserRepository userRepository
     ) {
         this.authManager = authManager;
         this.jwtUtil = jwtUtil;
@@ -44,50 +46,69 @@ private final RefreshTokenRepository refreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.aiChatService = aiChatService;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(
             @RequestBody LoginRequest request) {
-try{
-        Authentication auth = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword() // Raw password
-                )
-        );
+        try{
+            Authentication auth = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword() // Raw password
+                    )
+            );
 
-        String accessToken =
-                jwtUtil.generateAccessToken(request.getEmail());
+            String accessToken =
+                    jwtUtil.generateAccessToken(request.getEmail());
 
-        String refreshToken =
-                jwtUtil.generateRefreshToken(request.getEmail());
+            String refreshToken =
+                    jwtUtil.generateRefreshToken(request.getEmail());
 
-        try {
-            Optional<RefreshToken> token = refreshTokenRepository.findByEmail(request.getEmail());
-            token.ifPresent(refreshTokenRepository::delete);
-        } catch (Exception e) {
-            e.printStackTrace(); // this prints the full cause
+            try {
+                Optional<RefreshToken> token = refreshTokenRepository.findByEmail(request.getEmail());
+                token.ifPresent(refreshTokenRepository::delete);
+            } catch (Exception e) {
+                e.printStackTrace(); // this prints the full cause
+            }
+            RefreshToken rt = new RefreshToken();
+            rt.setToken(refreshToken);
+            rt.setEmail(request.getEmail());
+            rt.setExpiryDate(
+                    Instant.now().plus(7, ChronoUnit.DAYS)
+            );
+
+            refreshTokenRepository.save(rt);
+
+            // fetch user details to return
+            var userOpt = userRepository.findByEmail(request.getEmail());
+            if (userOpt.isPresent()) {
+                var user = userOpt.get();
+                return ResponseEntity.ok(
+                        Map.of(
+                                "accessToken", accessToken,
+                                "refreshToken", refreshToken,
+                                "user", Map.of(
+                                        "id", user.getId(),
+                                        "email", user.getEmail(),
+                                        "name", user.getName(),
+                                        "level", user.getLevel()
+                                )
+                        )
+                );
+            }
+
+            return ResponseEntity.ok(
+                    Map.of(
+                            "accessToken", accessToken,
+                            "refreshToken", refreshToken
+                    )
+            );}
+        catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Invalid email or password");
         }
-        RefreshToken rt = new RefreshToken();
-        rt.setToken(refreshToken);
-        rt.setEmail(request.getEmail());
-        rt.setExpiryDate(
-                Instant.now().plus(7, ChronoUnit.DAYS)
-        );
-
-        refreshTokenRepository.save(rt);
-
-        return ResponseEntity.ok(
-                Map.of(
-                        "accessToken", accessToken,
-                        "refreshToken", refreshToken
-                )
-        );}
-catch (AuthenticationException e) {
-    return ResponseEntity.status(HttpStatus.FORBIDDEN)
-            .body("Invalid email or password");
-}
     }
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
@@ -106,7 +127,25 @@ catch (AuthenticationException e) {
             rt.setExpiryDate(Instant.now().plus(7, ChronoUnit.DAYS));
             refreshTokenRepository.save(rt);
 
-            // 4️⃣ Return response with tokens
+            // fetch created user
+            var userOpt = userRepository.findByEmail(request.getEmail());
+            if (userOpt.isPresent()) {
+                var user = userOpt.get();
+                // 4️⃣ Return response with tokens and user
+                return ResponseEntity.status(HttpStatus.CREATED).body(
+                        Map.of(
+                                "accessToken", accessToken,
+                                "refreshToken", refreshToken,
+                                "user", Map.of(
+                                        "id", user.getId(),
+                                        "email", user.getEmail(),
+                                        "name", user.getName(),
+                                        "level", user.getLevel()
+                                )
+                        )
+                );
+            }
+
             return ResponseEntity.status(HttpStatus.CREATED).body(
                     Map.of(
                             "accessToken", accessToken,

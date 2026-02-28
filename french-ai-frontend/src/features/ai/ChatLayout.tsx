@@ -32,7 +32,7 @@ export default function ChatLayout() {
         setTyping(true);
 
         try {
-            const res = await api.post("/auth/chat", {
+            const res = await api.post("/ai/chat", {
                 message: text,
             });
 
@@ -40,7 +40,8 @@ export default function ChatLayout() {
                 ...updated,
                 { role: "assistant", content: res.data.reply },
             ]);
-        } catch {
+        } catch (err) {
+            console.error("AI chat error", err);
             setMessages([
                 ...updated,
                 {
@@ -55,7 +56,6 @@ export default function ChatLayout() {
 
     return (
         <div className="flex flex-col h-full max-w-4xl mx-auto">
-
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages.map((msg, i) => (
                     <motion.div

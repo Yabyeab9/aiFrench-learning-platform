@@ -6,13 +6,11 @@ import {
     MessageSquare,
     ArrowRight,
 } from "lucide-react";
-import {
-    LineChart,
-    Line,
-    ResponsiveContainer,
-    Tooltip,
-} from "recharts";
+import React, { Suspense } from 'react';
+const WeeklyXpChart = React.lazy(() => import('../components/Chart/WeeklyXpChart'));
 import { useDashboard } from "../components/userDashboard";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export default function Dashboard() {
     const { data, loading, error } = useDashboard();
@@ -38,8 +36,15 @@ export default function Dashboard() {
     } = data;
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 text-white p-8">
-            <motion.div
+        <div className="
+min-h-screen
+bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.15),transparent_60%)]
+bg-slate-950
+text-white
+p-8
+">
+
+        <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-10"
@@ -129,35 +134,44 @@ export default function Dashboard() {
                 <h3 className="text-xl font-semibold mb-6">
                     Weekly XP
                 </h3>
-                <ResponsiveContainer width="100%" height="80%">
-                    <LineChart data={weeklyXp ?? []}>
-                        <Tooltip />
-                        <Line
-                            type="monotone"
-                            dataKey="xp"
-                            stroke="#6366f1"
-                            strokeWidth={3}
-                        />
-                    </LineChart>
-                </ResponsiveContainer>
+                <Suspense fallback={<div className="text-slate-400">Loading chart…</div>}>
+                    <WeeklyXpChart data={weeklyXp ?? []} />
+                </Suspense>
             </div>
         </div>
     );
 }
 
-function Stat({ icon, label, value }: {
+function Stat({
+                  icon,
+                  label,
+                  value,
+              }: {
     icon: React.ReactNode;
     label: string;
     value: string | number;
 }) {
     return (
         <motion.div
-            whileHover={{ y: -4 }}
-            className="bg-slate-800 p-6 rounded-2xl shadow-lg"
+            whileHover={{ y: -6, scale: 1.03 }}
+            className="
+        relative
+        bg-slate-800/70
+        backdrop-blur-xl
+        p-6
+        rounded-2xl
+        border border-slate-700
+        shadow-[0_0_30px_rgba(0,0,0,0.35)]
+        overflow-hidden
+      "
         >
+            {/* glow */}
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent pointer-events-none" />
+
             <div className="flex justify-between mb-3 text-indigo-400">
                 {icon}
             </div>
+
             <p className="text-slate-400">{label}</p>
             <h3 className="text-2xl font-bold">{value}</h3>
         </motion.div>

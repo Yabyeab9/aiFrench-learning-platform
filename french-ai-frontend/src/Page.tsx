@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Brain, MessageSquare, Flame, Trophy, Star } from "lucide-react";
+import { ArrowRight, Brain, MessageSquare, Flame, Trophy } from "lucide-react";
 import {Link} from "react-router-dom";
 
 export default function HomePage() {
@@ -40,11 +40,10 @@ export default function HomePage() {
 
             {/* Premium Highlight */}
             <section className="px-12 py-20 bg-gradient-to-r from-indigo-700/30 to-purple-700/30 rounded-3xl mx-6 shadow-2xl backdrop-blur-lg">
-                <h2 className="text-4xl font-bold mb-8 text-center">Why Choose Premium?</h2>
+                <h2 className="text-4xl font-bold mb-8 text-center">Why Choose elshADI</h2>
                 <div className="grid md:grid-cols-3 gap-8">
-                    <Highlight title="Exclusive AI Tutor" desc="Get priority access to advanced AI models for deeper corrections." />
+                    <Highlight title="Exclusive AI Tutor" desc="Get access to advanced AI models for deeper corrections." />
                     <Highlight title="Personalized Roadmap" desc="A tailored curriculum designed for your goals." />
-                    <Highlight title="VIP Support" desc="Priority help and guidance whenever you need it." />
                 </div>
             </section>
 

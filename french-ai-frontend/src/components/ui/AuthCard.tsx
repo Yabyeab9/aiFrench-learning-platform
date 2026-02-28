@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export default function AuthCard({ title, children }: any) {
     return (
         <div className="w-full max-w-md bg-zinc-900 p-8 rounded-2xl shadow-xl">

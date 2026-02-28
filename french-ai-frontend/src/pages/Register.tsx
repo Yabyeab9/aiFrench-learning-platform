@@ -4,6 +4,7 @@ import { Button } from "../components/ui/Button";
 import { motion } from "framer-motion";
 import {useState} from "react";
 import {api} from "../api/axios.ts";
+import { useToast } from "../components/ui/Toast";
 
 export default function Register() {
     const navigate = useNavigate();
@@ -12,16 +13,34 @@ export default function Register() {
     const [password, setPassword] = useState("");
     const [level, setLevel] = useState("Beginner");
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const { show } = useToast();
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
-        await api.post("/auth/register", {
-            name,
-            email,
-            password,
-            level,
-        });
-        navigate("/login");
+        setLoading(true);
+        try {
+            await api.post("/auth/register", {
+                name,
+                email,
+                password,
+                level,
+            });
+            show?.("Account created. Please log in.");
+            navigate("/login");
+        } catch (err: any) {
+            console.error("Registration failed:", err);
+            if (err?.isAxiosError && err?.code === 'ERR_NETWORK') {
+                show?.("Network error: could not reach backend. Check backend is running and CORS is enabled.");
+            } else if (err?.response) {
+                const msg = err.response?.data || err.response?.statusText || 'Registration failed';
+                show?.(String(msg));
+            } else {
+                show?.("An unexpected error occurred");
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -116,8 +135,8 @@ export default function Register() {
                             )}
                         </div>
 
-                        <Button type="submit" className="w-full mt-4">
-                            Create account
+                        <Button type="submit" className="w-full mt-4" loading={loading}>
+                            {loading ? 'Creating…' : 'Create account'}
                         </Button>
                     </form>
 

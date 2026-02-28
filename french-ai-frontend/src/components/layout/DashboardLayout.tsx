@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import { motion } from "framer-motion";

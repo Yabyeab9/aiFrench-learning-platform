@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export default function StatCard({ title, value, icon }: any) {
+export default function StatCard({ title, value, icon }: { title: string; value: string | number; icon?: React.ReactNode }) {
     return (
         <motion.div
             whileHover={{ y: -5 }}

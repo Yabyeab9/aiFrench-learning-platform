@@ -19,4 +19,7 @@ public interface XpRepository extends JpaRepository<XpLog, Long> {
 """, nativeQuery = true)
         List<XpPoint> weeklyXp(@Param("userId") Long userId);
 
+        @Query(value = "SELECT COALESCE(SUM(x.amount), 0) FROM xp_log x WHERE x.user_id = :userId", nativeQuery = true)
+        Long totalXp(@Param("userId") Long userId);
+
 }

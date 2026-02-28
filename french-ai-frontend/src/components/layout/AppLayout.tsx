@@ -8,7 +8,7 @@ export default function AppLayout({
 }) {
 
     return (
-        <div className="flex h-screen bg-slate-950 text-white">
+        <div className="flex h-screen bg-gradient-to-b from-[#04050b] to-[#071026] text-white">
 
             <Sidebar />
 

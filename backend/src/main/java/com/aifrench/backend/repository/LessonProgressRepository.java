@@ -5,6 +5,7 @@ import com.aifrench.backend.dto.LessonCard;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface LessonProgressRepository
@@ -12,6 +13,8 @@ public interface LessonProgressRepository
     Optional<LessonProgress> findByUserIdAndLessonId(Long userId, Long lessonId);
 
     long countByUserId(Long userId);
+
+    List<LessonProgress> findByUserId(Long userId);
 
     @Query("""
         SELECT new com.aifrench.backend.dto.LessonCard(
@@ -24,7 +27,7 @@ public interface LessonProgressRepository
         ORDER BY lp.lastAccessedAt DESC
         LIMIT 1
     """)
-    LessonCard findCurrentLesson(@Param("userId") Long userId);
+    LessonCard findCurrentLesson(@Param("userId") Long user);
 
     @Query("""
         SELECT CASE

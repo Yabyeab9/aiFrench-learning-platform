@@ -5,18 +5,22 @@ import { Button } from "../components/ui/Button";
 import { api } from "../api/axios";
 import { useAuthStore } from "../store/auth.store";
 import { motion } from "framer-motion";
+import { useRoadmapStore } from "../features/levels/roadmap.store";
 
 export default function Login() {
     const login = useAuthStore((s) => s.login);
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPwd] = useState("");
+    const loadRoadmap = useRoadmapStore((s) => s.loadRoadmap);
 
     const handleLogin = async (e:React.FormEvent) => {
         e.preventDefault();
         const res = await api.post("/auth/login", { email, password });
         localStorage.setItem("accessToken",res.data.accessToken);
         login(res.data.accessToken, res.data.user);
+        // load roadmap immediately so progress UI is up-to-date
+        loadRoadmap().catch(e=>console.warn("loadRoadmap after login failed", e));
         navigate("/dashboard");
     };
 

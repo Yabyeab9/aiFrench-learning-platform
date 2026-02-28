@@ -30,5 +30,7 @@ public class Question {
     private String correctAnswer;
 
     private int xp; // XP gained if correct
+
+    private Difficulty difficulty;
 }
 
